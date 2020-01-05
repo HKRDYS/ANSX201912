@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">ANSX201912</string>
+    <string name="username">用户名:</string>
+    <string name="password">密码:</string>
+    <string name="Login_prompt_ok">登录成功</string>
+    <string name="do_login">登录中</string>
+    <string name="Login_prompt_no">用户名或密码错误，请重试！</string>
+    <string name="Login_prompt_err">网络连接错误!</string>
+    <string name="Login_screen">登录界面</string>
+    <string name="reg">还没有账号？点击此处注册</string>
+
+</resources>
