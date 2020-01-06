@@ -27,7 +27,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (username.equals("username") & password.equals("password")){}
-
+        //跳转
             }
         });
 
