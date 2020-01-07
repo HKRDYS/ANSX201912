@@ -1,5 +1,5 @@
 package com.example.androidtest;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,14 +9,11 @@ import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.io.BufferedReader;
+import com.example.androidhttp.HttpUtil;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
     public int pwdResetFlag = 0;
@@ -25,12 +22,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button registerButton;//注册
     private Button loginButton;//登录
     private Button cancelButton;//注销
-
     private CheckBox rememberCheck;//记住密码
-
     private SharedPreferences login_sp;
-    private String username,password;
-
     private View loginView;                           //登录
     private View loginSuccessView;
     private TextView loginSuccessShow;
@@ -41,17 +34,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
         //通过id找到相应的控件
-        account = (EditText) findViewById(R.id.login_edit_account);
-        pwd = (EditText) findViewById(R.id.login_edit_pwd);
-        registerButton = (Button) findViewById(R.id.login_btn_register);
-        loginButton = (Button) findViewById(R.id.login_btn_login);
+        account = (EditText) findViewById(R.id.login_edit_account);//获取用户名
+        pwd = (EditText) findViewById(R.id.login_edit_pwd);//获取密码
+        registerButton = (Button) findViewById(R.id.login_btn_register);//注册按钮
+        loginButton = (Button) findViewById(R.id.login_btn_login);//登录按钮
         cancelButton = (Button) findViewById(R.id.login_btn_cancel);
         loginView=findViewById(R.id.login_view);
         loginSuccessView=findViewById(R.id.login_success_view);
         loginSuccessShow=(TextView) findViewById(R.id.login_success_show);
-
         changePwdText = (TextView) findViewById(R.id.login_text_change_pwd);
-
         rememberCheck = (CheckBox) findViewById(R.id.Login_Remember);
         login_sp = getSharedPreferences("userInfo", 0);
         String name=login_sp.getString("USER_NAME", "");
@@ -72,26 +63,26 @@ public class LoginActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(mListener);
         //更改密码
         changePwdText.setOnClickListener(mListener);
-
         ImageView image = (ImageView) findViewById(R.id.logo);             //使用ImageView显示logo
         image.setImageResource(R.drawable.logo);
-
-//        if (mUserDataManager == null) {
-//            mUserDataManager = new UserDataManager(this);
-//            mUserDataManager.openDataBase();                              //建立本地数据库
-//        }
-
     }
     View.OnClickListener mListener = new View.OnClickListener() {                  //不同按钮按下的监听事件选择
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.login_btn_register:                            //登录界面的注册按钮
+
                     Intent intent_Login_to_Register = new Intent(LoginActivity.this,RegisterActivity.class) ;    //切换Login Activity至User Activity
                     startActivity(intent_Login_to_Register);
                     finish();
                     break;
                 case R.id.login_btn_login:                              //登录界面的登录按钮
-                    login();
+                    String loginUrl = "http://localhost:8080/AndroidWeb_war_exploded/LoginServlet";
+                    //获取当前输入的用户名和密码信息
+                    String userName = account.getText().toString().trim();//trim()去掉空格
+                    String userPwd = pwd.getText().toString().trim();
+                    @SuppressLint("CommitPrefEdits")
+                    SharedPreferences.Editor editor =login_sp.edit();
+                    loginWithOkHttp(loginUrl,userName,userPwd);
                     break;
                 case R.id.login_btn_cancel:                             //登录界面的注销按钮
                     cancel();
@@ -104,101 +95,56 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     };
-    public void login() {                                              //登录按钮监听事件
+    public void loginWithOkHttp(String url,String username,String password) {//登录按钮监听事件
+        HttpUtil.loginWithOkHttp(url, username, password, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //异常情况进行处理
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseData = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (responseData.equals("true")){
+                            Toast.makeText(LoginActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(LoginActivity.this,"登录失败",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+////更改*******************
+    public void cancel() {           //注销
 //        if (isUserNameAndPwdValid()) {
 //            String userName = account.getText().toString().trim();    //获取当前输入的用户名和密码信息
 //            String userPwd = pwd.getText().toString().trim();
-//            SharedPreferences.Editor editor =login_sp.edit();
 //
 //            int result = 1;
-//            //int result=mUserDataManager.findUserByNameAndPwd(userName, userPwd);
+////            int result=mUserDataManager.findUserByNameAndPwd(userName, userPwd);
 //
 //            if(result==1){                                             //返回1说明用户名和密码均正确
-//                //保存用户名和密码
-//                editor.putString("USER_NAME", userName);
-//                editor.putString("PASSWORD", userPwd);
+////                Intent intent = new Intent(Login.this,User.class) ;    //切换Login Activity至User Activity
+////                startActivity(intent);
+//                Toast.makeText(this, getString(R.string.cancel_success),Toast.LENGTH_SHORT).show();//登录成功提示
+//                pwd.setText("");
+//                account.setText("");
 //
-//                //是否记住密码
-//                if(rememberCheck.isChecked()){
-//                    editor.putBoolean("rememberCheck", true);
-//                }else{
-//                    editor.putBoolean("rememberCheck", false);
-//                }
-//                editor.commit();
+////                mUserDataManager.deleteUserDatabyname(userName);
 //
-//                Intent intent = new Intent(LoginActivity.this,User.class) ;    //切换Login Activity至User Activity
-//                startActivity(intent);
-//                finish();
-//                Toast.makeText(this, getString(R.string.login_success),Toast.LENGTH_SHORT).show();//登录成功提示
+//
 //            }else if(result==0){
-//                Toast.makeText(this, getString(R.string.login_fail),Toast.LENGTH_SHORT).show();  //登录失败提示
+//                Toast.makeText(this, getString(R.string.cancel_fail),Toast.LENGTH_SHORT).show();  //登录失败提示
 //            }
 //        }
-
-        final String userName = account.getText().toString().trim();    //获取当前输入的用户名和密码信息
-        final String userPwd = pwd.getText().toString().trim();
-        SharedPreferences.Editor editor =login_sp.edit();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String path="http://192.168.0.101:8080/AndroidTest/mustLogin?logname="+userName+"&password="+userPwd;
-                try {
-                    try {
-                        URL url = new URL(path); //新建url并实例化
-                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                        connection.setRequestMethod("GET");//获取服务器数据
-                        connection.setReadTimeout(8000);//设置读取超时的毫秒数
-                        connection.setConnectTimeout(8000);//设置连接超时的毫秒数
-                        InputStream in = connection.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                        String result = reader.readLine();//读取服务器进行逻辑处理后页面显示的数据
-                        Log.d("MainActivity","run: "+result);
-                        if (result.equals("login successfully!")){
-                            Log.d("LoginActivity","run2: "+result);
-                            Looper.prepare();
-                            Log.d("LoginActivity","run3: "+result);
-                            Toast.makeText(LoginActivity.this," successfully!",Toast.LENGTH_SHORT).show();
-                            Log.d("LoginActivity","run4: "+result);
-                            Looper.loop();
-                        }
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }).start();
-
+//
     }
 
-
-    public void cancel() {           //注销
-        if (isUserNameAndPwdValid()) {
-            String userName = account.getText().toString().trim();    //获取当前输入的用户名和密码信息
-            String userPwd = pwd.getText().toString().trim();
-
-            int result = 1;
-//            int result=mUserDataManager.findUserByNameAndPwd(userName, userPwd);
-
-            if(result==1){                                             //返回1说明用户名和密码均正确
-//                Intent intent = new Intent(Login.this,User.class) ;    //切换Login Activity至User Activity
-//                startActivity(intent);
-                Toast.makeText(this, getString(R.string.cancel_success),Toast.LENGTH_SHORT).show();//登录成功提示
-                pwd.setText("");
-                account.setText("");
-
-//                mUserDataManager.deleteUserDatabyname(userName);
-
-
-            }else if(result==0){
-                Toast.makeText(this, getString(R.string.cancel_fail),Toast.LENGTH_SHORT).show();  //登录失败提示
-            }
-        }
-
-    }
-
+    //更改*******************
     public boolean isUserNameAndPwdValid() {
         if (account.getText().toString().trim().equals("")) {
             Toast.makeText(this, getString(R.string.account_empty),
