@@ -41,11 +41,11 @@
         </FrameLayout>
 
         <Button
-                android:id="@+id/search_btn_back"
+                android:id="@+id/btn_back"
                 android:layout_gravity="center_vertical"
                 android:background="#435"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="31dp"
                 android:textSize="16dp"
                 android:text="返回"
                 android:textColor="@color/colorAccent"/>
@@ -125,7 +125,7 @@
                 android:id="@+id/vp_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@mipmap/bgm2"
+                android:background="@mipmap/bgm4"
                 android:descendantFocusability="blocksDescendants" />
     </FrameLayout>
 
@@ -133,17 +133,17 @@
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content">
 
-        <TextView
-                android:id="@+id/file"
+        <Button
+                android:id="@+id/file_"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:text="生活"
+                android:text="军事"
                 android:textColor="@color/colorAccent"
                 android:textSize="16dp"
                 android:gravity="center"
                 android:layout_height="wrap_content"/>
-        <TextView
-                android:id="@+id/food"
+        <Button
+                android:id="@+id/food_"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="食物"
@@ -151,8 +151,8 @@
                 android:textSize="16dp"
                 android:gravity="center"
                 android:layout_height="wrap_content"/>
-        <TextView
-                android:id="@+id/sky"
+        <Button
+                android:id="@+id/sky_"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="天文"
@@ -160,8 +160,8 @@
                 android:textColor="@color/colorAccent"
                 android:gravity="center"
                 android:layout_height="wrap_content"/>
-        <TextView
-                android:id="@+id/train"
+        <Button
+                android:id="@+id/train_"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="旅游"
@@ -171,13 +171,57 @@
                 android:layout_height="wrap_content"/>
     </LinearLayout>
 
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:background="@mipmap/bgm1">
+
+        <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="以平凡铸就不凡"
+                android:layout_marginLeft="120dp"
+                android:gravity="center_vertical"
+                android:textSize="20dp"
+                android:textColor="@color/colorPrimary"/>
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="63dp"
+                  android:background="@mipmap/bgm1">
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textSize="16sp"
+                  android:textColor="@color/colorPrimary"
+                  android:text="        在过去的一年里，许许多多无怨无悔、倾情奉献的无名英雄，以普通人的平凡书写了不平凡的人生，给我们启迪，给我们力量。"/>
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="102dp"
+                    android:background="@mipmap/bgm1">
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textSize="16sp"
+                  android:textColor="@color/colorPrimary"
+                  android:text="        2020年的号角已经吹响，在这具有里程碑意义的一年伊始，让我们一起回顾这些感动你我的人和事，为他们的无怨无悔点赞，向他们的倾情奉献致敬，让我们将这份无私无畏的奋斗精神转化为无穷动力，在新的逐梦征途上接续奋斗，勇往直前。"/>
+
+    </LinearLayout>
+
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginTop="250dp">
+                  android:layout_marginTop="2dp">
 
-
-        <TextView
-                android:id="@+id/imp"
+        <Button
+                android:id="@+id/imp_"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="主页"
@@ -185,8 +229,8 @@
                 android:gravity="center"
                 android:textColor="@color/colorAccent"
                 android:layout_height="wrap_content"/>
-        <TextView
-                android:id="@+id/am"
+        <Button
+                android:id="@+id/am_"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="我的"
