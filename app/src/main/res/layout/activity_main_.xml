@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.lenovo.wenews.MainActivity_">
+    tools:context="com.example.home.MainActivity_">
 
     <include layout="@layout/main_content" />
 

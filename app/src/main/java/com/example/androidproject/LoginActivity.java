@@ -12,17 +12,15 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.webservice.WebService;
+import com.example.home.MainActivity_;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 public class LoginActivity extends AppCompatActivity {
     public int pwdResetFlag = 0;
     private EditText account; //用户名
@@ -30,8 +28,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button registerButton;//注册
     private Button loginButton;//登录
     private Button cancelButton;//注销
-
-
     class MyThread extends Thread{
         private Context context;
         private String ip;
@@ -47,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
             this.password = password;
             this.handler = handler;
         }
-
         @Override
         public void run() {
             super.run();
@@ -95,103 +90,57 @@ public class LoginActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             String result = (String) msg.obj;
-            //12312 dwaas
             //解析json字符串
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 //方法说明：optString方法表示取json对象里面的某个键对应的值，如果没有则取到得是null
-                String name = jsonObject.optString("username");
-                String password = jsonObject.optString("password");
-                System.out.println(name);
-                System.out.println(password);
-                if ( name.equals("login") ||  password.equals("true")) {
-
-                    //登录成功
-                    //表示登陆成功,登陆信息保存的位置
+                String loginCheck = jsonObject.optString("login");
+                if ( loginCheck.equals("true")) {
                     Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
-
+                    //页面跳转
+                    Intent intent = new Intent(LoginActivity.this, MainActivity_.class);
+                    startActivity(intent);
                 } else {
-                    //用户名和密码输入错误
+                        //用户名和密码输入错误
+                        //登录成功
+                        //表示登陆成功,登陆信息保存的位置
                     Toast.makeText(LoginActivity.this, "用户名或密码错误，登录失败", Toast.LENGTH_LONG).show();
-                    //利用sharePreference保存登陆成功的一些基本信息
-                    /**
-                     * 参数说明：
-                     * 参数1为文件名字
-                     * 参数2为访问的方式
-                     */
-                    SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
-                    //获得SharedPreferences对象的编辑器
-                    SharedPreferences.Editor editor = sp.edit();
-                    //参数说明：参数1表示键，参数2表示值
-                    editor.putString("username", name);
-                    editor.putString("password", password);
-                    //存储完数据以后提交
-                    editor.commit();
-
-//                    //页面跳转
-//                    Intent intent = new Intent(MainActivity.this, LoginSuccess.class);
-//                    startActivity(intent);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
-
-//    private CheckBox rememberCheck;//记住密码
-//
-//    private SharedPreferences login_sp;
-//    private String username,password;
-//
-//    private View loginView;                           //登录
-//    private View loginSuccessView;
-//    private TextView loginSuccessShow;
-//    private TextView changePwdText;
-//    private UserDataManager mUserDataManager;         //用户数据管理类
+    private CheckBox rememberCheck;//记住密码
+    private SharedPreferences login_sp;
     private MyHandler handler;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
         handler = new MyHandler();
-
         //通过id找到相应的控件
         account = (EditText) findViewById(R.id.login_edit_account);
         pwd = (EditText) findViewById(R.id.login_edit_pwd);
         registerButton = (Button) findViewById(R.id.login_btn_register);
         loginButton = (Button) findViewById(R.id.login_btn_login);
         cancelButton = (Button) findViewById(R.id.login_btn_cancel);
-//        loginView=findViewById(R.id.login_view);
-//        loginSuccessView=findViewById(R.id.login_success_view);
-//        loginSuccessShow=(TextView) findViewById(R.id.login_success_show);
-//
-//        changePwdText = (TextView) findViewById(R.id.login_text_change_pwd);
-//
-//        rememberCheck = (CheckBox) findViewById(R.id.Login_Remember);
-//        login_sp = getSharedPreferences("userInfo", 0);
-//        String name=login_sp.getString("USER_NAME", "");
-//        String userPwd =login_sp.getString("PASSWORD", "");
-//        boolean choseRemember =login_sp.getBoolean("rememberCheck", false);
-//        boolean choseAutoLogin =login_sp.getBoolean("autoLoginCheck", false);
-//        //如果上次选了记住密码，那进入登录页面也自动勾选记住密码，并填上用户名和密码
-//        if(choseRemember){
-//            account.setText(name);
-//            pwd.setText(userPwd);
-//            rememberCheck.setChecked(true);
-//        }
+        rememberCheck = (CheckBox) findViewById(R.id.Login_Remember);
+        login_sp = getSharedPreferences("userInfo", 0);
+        String name=login_sp.getString("USER_NAME", "");
+        String userPwd =login_sp.getString("PASSWORD", "");
+        boolean choseRemember =login_sp.getBoolean("rememberCheck", false);
+        boolean choseAutoLogin =login_sp.getBoolean("autoLoginCheck", false);
+        //如果上次选了记住密码，那进入登录页面也自动勾选记住密码，并填上用户名和密码
+        if(choseRemember){
+            account.setText(name);
+            pwd.setText(userPwd);
+            rememberCheck.setChecked(true);
+        }
 
         registerButton.setOnClickListener(mListener);                      //采用OnClickListener方法设置不同按钮按下之后的监听事件
         loginButton.setOnClickListener(mListener);
         cancelButton.setOnClickListener(mListener);
-//        changePwdText.setOnClickListener(mListener);
-
-//        ImageView image = (ImageView) findViewById(R.id.logo);             //使用ImageView显示logo
-//        image.setImageResource(R.drawable.logo);
-
-//        if (mUserDataManager == null) {
-//            mUserDataManager = new UserDataManager(this);
-//            mUserDataManager.openDataBase();                              //建立本地数据库
-//        }
 
     }
     View.OnClickListener mListener = new View.OnClickListener() {                  //不同按钮按下的监听事件选择
@@ -208,11 +157,6 @@ public class LoginActivity extends AppCompatActivity {
                 case R.id.login_btn_cancel:                             //登录界面的注销按钮
                     cancel();
                     break;
-                case R.id.login_text_change_pwd:                             //登录界面的注销按钮
-                    Intent intent_Login_to_reset = new Intent(LoginActivity.this,ResetActivity.class) ;    //切换Login Activity至User Activity
-                    startActivity(intent_Login_to_reset);
-                    finish();
-                    break;
             }
         }
     };
@@ -225,48 +169,20 @@ public class LoginActivity extends AppCompatActivity {
         MyThread mythread = new MyThread(LoginActivity.this,ip,mode,username,password,handler);
         mythread.start();
     }
-
-
-
-
     public void cancel() {           //注销
-
-
+        account.setText("");
+        pwd.setText("");
     }
-
-//    public boolean isUserNameAndPwdValid() {
-//        if (account.getText().toString().trim().equals("")) {
-//            Toast.makeText(this, getString(R.string.account_empty),
-//                    Toast.LENGTH_SHORT).show();
-//            return false;
-//        } else if (pwd.getText().toString().trim().equals("")) {
-//            Toast.makeText(this, getString(R.string.pwd_empty),
-//                    Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
-//        return true;
-//    }
-
     @Override
     protected void onResume() {
-//        if (mUserDataManager == null) {
-//            mUserDataManager = new UserDataManager(this);
-//            mUserDataManager.openDataBase();
-//        }
         super.onResume();
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
-
     @Override
     protected void onPause() {
-//        if (mUserDataManager != null) {
-//            mUserDataManager.closeDataBase();
-//            mUserDataManager = null;
-//        }
         super.onPause();
     }
 }
