@@ -18,8 +18,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
 
-            <EditText
-                    android:id="@+id/search_et_input"
+            <Button
+                    android:id="@+id/btn_src"
                     android:layout_gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
