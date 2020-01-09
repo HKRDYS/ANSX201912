@@ -1,10 +1,9 @@
-package com.example.localsearchdemo.view;
+package com.example.lenovo.wenews;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 public class ListViewForScrollView extends ListView{
     public ListViewForScrollView(Context context) {

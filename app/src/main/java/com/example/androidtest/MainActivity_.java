@@ -34,6 +34,8 @@ public class MainActivity_ extends AppCompatActivity implements View.OnClickList
     private Button mTabTrian;
     private Button mTabMain;
 
+    private Button mTabSrc;
+
 //    private TextView textView;
 
 //    private FileActivity mFile;
@@ -65,6 +67,8 @@ public class MainActivity_ extends AppCompatActivity implements View.OnClickList
         mTabSky = findViewById(R.id.sky_);
         mTabTrian = findViewById(R.id.train_);
         mTabMain = findViewById(R.id.imp_);
+
+        mTabSrc = findViewById(R.id.btn_src);
 
         /**
          * 点击军事按钮监视器
@@ -157,7 +161,7 @@ public class MainActivity_ extends AppCompatActivity implements View.OnClickList
 
 
         /**
-         * 点击天文按钮监视器
+         * 点击主页按钮监视器
          */
         mTabMain.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +179,23 @@ public class MainActivity_ extends AppCompatActivity implements View.OnClickList
         });
 
 
+        /**
+         * 点击搜索按钮监视器
+         */
+        mTabSrc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                /*
+                创建意图intent
+                第一个参数:上下文对象this
+                第二个参数:目标文件
+                 */
+                Intent intent = new Intent(MainActivity_.this,SrcActivity.class);
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void initView(){
